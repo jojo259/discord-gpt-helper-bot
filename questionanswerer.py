@@ -20,7 +20,7 @@ async def answerQuestion(bot, inChannel, questionStr = None, messagesStr = None)
 			'library': await librarymanager.getCurrentLibrary(bot),
 			'question': questionStr,
 			'messaegs': messagesStr,
-			'task': 'Answer the given question ("question") or guess what the question is based on the messages ("messages") given. using the information provided in the Library ("library"). Do not answer the question if it is not directly about the topics covered in the Library. If there is no information in the Library to answer the question, then make up a question about the price. Output in JSON format, like {"question": "thequestionhere", "answer": "theanswerhere"}, with only one these two fields "question" and "answer". Re-write the question, correcting any mistakes.'
+			'task': 'Answer the given question ("question") or guess what the question is based on the messages ("messages") given using the information provided in the Library ("library"). Do not answer the question if it is not directly about the topics covered in the Library. If there is no information in the Library to answer the question, then make up a question about the price. Only respond in JSON format. The JSON should be like {"question": "thequestionhere", "answer": "theanswerhere"}, with only one these two fields "question" and "answer". Re-write the question, correcting any mistakes.'
 		}
 	)
 
