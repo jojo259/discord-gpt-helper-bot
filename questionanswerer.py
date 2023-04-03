@@ -26,7 +26,12 @@ async def answerQuestion(bot, inChannel, questionStr = None, messagesStr = None)
 
 	apiResp = await apirequester.makeRequest(promptStr, systemMessage = f'You are an AI bot called {bot.user.name}.\nDo what the user says.')
 
-	apiJson = json.loads(apiResp)
+	try:
+		apiJson = json.loads(apiResp)
+	except json.JSONDecodeError as e:
+		print(e)
+		print(apiResp)
+		return
 
 	apiQuestion = apiJson.get('question', '[question]')
 	apiAnswer = apiJson.get('answer', '[answer]')

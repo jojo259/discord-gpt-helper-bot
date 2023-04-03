@@ -24,7 +24,12 @@ async def newLibraryMessage(bot, curMessage):
 
 	apiResp = await apirequester.makeRequest(promptStr)
 
-	newLibrary = json.loads(apiResp).get('newLibrary', 'jsonfail')
+	try:
+		newLibrary = json.loads(apiResp)['newLibrary']
+	except json.JSONDecodeError as e:
+		print(e)
+		print(apiResp)
+		return
 
 	await setCurrentLibrary(bot, newLibrary)
 	await cleanLibraryChannel(bot)
