@@ -9,7 +9,7 @@ import requests
 async def newLibraryMessage(bot, curMessage):
 
 	currentLibrary = await getCurrentLibrary(bot)
-	if bool(currentLibrary):
+	if currentLibrary:
 		await bot.versionsChannel.send(file=File(fp=io.StringIO(currentLibrary), filename="history.txt"))
 
 	if curMessage.content.startswith('.setlibrary'):
@@ -34,13 +34,13 @@ async def newLibraryMessage(bot, curMessage):
 
 async def setCurrentLibrary(bot, currentLibrary):
 	await cleanLibraryChannel(bot)
-	if bool(currentLibrary):
+	if currentLibrary:
 		await bot.libraryChannel.send(file=File(fp=io.StringIO(currentLibrary), filename="library.txt"))
 
 async def getCurrentLibrary(bot):
 	async for curMessage in bot.libraryChannel.history(limit = 100):
 		if curMessage.author == bot.user:
-			if bool(curMessage.attachments):
+			if curMessage.attachments:
 				req = requests.get(curMessage.attachments[0].url)
 				return req.content.decode(req.encoding)
 
