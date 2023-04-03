@@ -13,7 +13,11 @@ async def newLibraryMessage(bot, curMessage):
 		await bot.versionsChannel.send(file = File(fp = io.StringIO(currentLibrary), filename = 'history.txt'))
 
 	if curMessage.content.startswith('.setlibrary'):
-		await setCurrentLibrary(bot, curMessage.content[len('.setlibrary '):])
+		if curMessage.attachments:
+			file = requests.get(curMessage.attachments[0].url)
+			await setCurrentLibrary(bot, file.content.decode(file.encoding))
+		else:
+			await setCurrentLibrary(bot, curMessage.content[len('.setlibrary '):])
 		return
 
 	print(f'new library message: {curMessage.content}')
