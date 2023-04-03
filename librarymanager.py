@@ -14,7 +14,6 @@ async def newLibraryMessage(bot, curMessage):
 
 	if curMessage.content.startswith('.setlibrary'):
 		await setCurrentLibrary(bot, curMessage.content[len('.setlibrary '):])
-		await cleanLibraryChannel(bot)
 		return
 
 	print(f'new library message: {curMessage.content}')
