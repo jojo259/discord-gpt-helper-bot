@@ -35,7 +35,7 @@ async def newLibraryMessage(bot, curMessage):
 async def setCurrentLibrary(bot, currentLibrary):
 	await cleanLibraryChannel(bot)
 	if bool(currentLibrary):
-		await bot.libraryChannel.send(file=File(fp=io.StringIO(currentLibrary), filename="history.txt"))
+		await bot.libraryChannel.send(file=File(fp=io.StringIO(currentLibrary), filename="library.txt"))
 
 async def getCurrentLibrary(bot):
 	async for curMessage in bot.libraryChannel.history(limit = 100):
