@@ -2,10 +2,15 @@ import json
 
 import apirequester
 
+from discord import File
+import io
+import requests
+
 async def newLibraryMessage(bot, curMessage):
 
 	currentLibrary = await getCurrentLibrary(bot)
-	await bot.versionsChannel.send(currentLibrary)
+	if bool(currentLibrary):
+		await bot.versionsChannel.send(file=File(fp=io.StringIO(currentLibrary), filename="history.txt"))
 
 	if curMessage.content.startswith('.setlibrary'):
 		await setCurrentLibrary(bot, curMessage.content[len('.setlibrary '):])
@@ -27,30 +32,22 @@ async def newLibraryMessage(bot, curMessage):
 	newLibrary = json.loads(apiResp).get('newLibrary', 'jsonfail')
 
 	await setCurrentLibrary(bot, newLibrary)
-	await cleanLibraryChannel(bot)
 
 async def setCurrentLibrary(bot, currentLibrary):
-	async for curMessage in bot.libraryChannel.history(limit = 100):
-		if curMessage.author == bot.user:
-			if curMessage.content.startswith('INFO:'):
-				await curMessage.edit(content = f'INFO:\n{currentLibrary}')
+	await cleanLibraryChannel(bot)
+	if bool(currentLibrary):
+		await bot.libraryChannel.send(file=File(fp=io.StringIO(currentLibrary), filename="history.txt"))
 
 async def getCurrentLibrary(bot):
-	libraryMessage = False
 	async for curMessage in bot.libraryChannel.history(limit = 100):
 		if curMessage.author == bot.user:
-			if curMessage.content.startswith('INFO:'):
-				libraryMessage = curMessage
-	if not libraryMessage:
-		libraryMessage = await bot.libraryChannel.send('INFO:')
+			if bool(curMessage.attachments):
+				req = requests.get(curMessage.attachments[0].url)
+				return req.content.decode(req.encoding)
 
-	return libraryMessage.content[len('INFO:\n'):]
+	await setCurrentLibrary(bot, "")
+	return ""
 
 async def cleanLibraryChannel(bot):
-	libraryMessage = False
 	async for curMessage in bot.libraryChannel.history(limit = 100):
-		if curMessage.author == bot.user:
-			if curMessage.reference != None:
-				await curMessage.delete()
-		else:
-			await curMessage.delete()
+		await curMessage.delete()
